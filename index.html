@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бизнес Симулятор Mini App</title>
-    <!-- Подключаем скрипт Telegram Web App -->
+    <title>Бизнес Симулятор</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -24,78 +23,82 @@
             flex-direction: column;
             align-items: center;
         }
-        h2 { margin-bottom: 8px; }
+        h2 { margin: 12px 0 6px 0; font-size: 16px; width: 100%; max-width: 400px; text-align: left; }
         .card {
             background: rgba(128, 128, 128, 0.1);
             border-radius: 12px;
             padding: 12px;
             width: 100%;
             max-width: 400px;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.4;
         }
         .btn-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             max-width: 400px;
+        }
+        .full-width {
+            grid-column: span 2;
         }
         button {
             background-color: var(--button-color);
             color: var(--button-text-color);
             border: none;
             border-radius: 8px;
-            padding: 12px;
-            font-size: 14px;
+            padding: 10px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: opacity 0.2s;
         }
         button:active { opacity: 0.8; }
-        .full-width { grid-column: span 2; }
     </style>
 </head>
 <body>
 
-    <h2>📊 Статистика бизнеса</h2>
-    <div class="card" id="stats-card">
-        Загрузка данных...
+    <div class="card" id="user-card">
+        👤 Загрузка профиля...
     </div>
 
-    <h2>🏢 Выбор бизнеса</h2>
+    <h2>🏢 Выберите тип бизнеса</h2>
     <div class="btn-grid">
-        <button onclick="selectBusiness('Кафе')">☕ Кафе</button>
-        <button onclick="selectBusiness('Магазин одежды')">👗 Одежда</button>
-        <button onclick="selectBusiness('Интернет магазин')">🎧 Интернет-магазин</button>
-        <button onclick="selectBusiness('Автомойка')">🚗 Автомойка</button>
+        <button onclick="sendAction('select:Кафе')">☕ Кафе</button>
+        <button onclick="sendAction('select:Магазин одежды')">👗 Одежда</button>
+        <button onclick="sendAction('select:Интернет магазин')">🎧 Интернет-маг</button>
+        <button onclick="sendAction('select:Автомойка')">🚗 Автомойка</button>
     </div>
 
-    <h2>⚙️ Действия</h2>
-    <div class="btn-grid" style="margin-top: 10px;">
+    <h2>⚙️ Действия и Торговля</h2>
+    <div class="btn-grid">
         <button onclick="sendAction('buy')">📦 Купить товар</button>
         <button onclick="sendAction('sell')">💵 Продать товар</button>
         <button onclick="sendAction('work')">👷 Работа</button>
         <button onclick="sendAction('upgrade')">🚀 Улучшить ($500)</button>
+        <button class="full-width" onclick="sendAction('stats')">📊 Статистика и Событие дня</button>
+    </div>
+
+    <h2>🏆 Рейтинги игроков</h2>
+    <div class="btn-grid">
+        <button onclick="sendAction('top_players')">🏆 Топ-10 игроков</button>
+        <button onclick="sendAction('all_players')">📋 Все игроки</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Растянуть на весь экран
+        tg.expand();
 
-        // Получаем информацию о пользователе из Telegram
         const user = tg.initDataUnsafe?.user;
         
-        // Отрендерим базовую плашку статистики в Mini App
-        document.getElementById('stats-card').innerHTML = `
-            👤 Игрок: ${user ? (user.first_name || user.username) : 'Гость'}<br>
+        document.getElementById('user-card').innerHTML = `
+            👤 Игрок: <b>${user ? (user.first_name || user.username) : 'Гость'}</b><br>
             📱 Telegram ID: ${user ? user.id : 'Неизвестно'}<br>
-            <i>Выберите действие ниже, бот пришлет отчет в чат!</i>
+            <i>Нажимайте кнопки ниже, результаты пришлет бот в чат.</i>
         `;
-
-        function selectBusiness(bizName) {
-            tg.sendData("select:" + bizName);
-        }
 
         function sendAction(action) {
             tg.sendData(action);
