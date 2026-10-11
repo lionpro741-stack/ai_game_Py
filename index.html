@@ -1,257 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<title>Бизнес-симулятор</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  :root {
-    --bg: var(--tg-theme-bg-color, #ffffff);
-    --text: var(--tg-theme-text-color, #1a1a1a);
-    --hint: var(--tg-theme-hint-color, #8a8a8e);
-    --card: var(--tg-theme-secondary-bg-color, #f2f2f7);
-    --accent: var(--tg-theme-button-color, #2481cc);
-    --accent-text: var(--tg-theme-button-text-color, #ffffff);
-    --green: #2fa84f;
-    --red: #e5484d;
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    margin: 0; padding: 16px 16px 90px;
-    background: var(--bg); color: var(--text);
-    font: 16px/1.4 -apple-system, "SF Pro Text", Roboto, system-ui, sans-serif;
-  }
-  h2 { margin: 24px 0 10px; font-size: 13px; font-weight: 600; letter-spacing: .04em;
-       text-transform: uppercase; color: var(--hint); }
-  .card { background: var(--card); border-radius: 14px; padding: 14px; }
-
-  .balance { text-align: center; padding: 22px 14px; }
-  .balance .money { font-size: 38px; font-weight: 700; letter-spacing: -.02em; }
-  .balance .name { color: var(--hint); font-size: 14px; }
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  .stat .label { font-size: 12px; color: var(--hint); }
-  .stat .value { font-size: 20px; font-weight: 600; }
-  .bar { height: 6px; background: var(--bg); border-radius: 3px; margin-top: 6px; overflow: hidden; }
-  .bar > div { height: 100%; background: var(--accent); transition: width .3s; }
-
-  .biz-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .biz { text-align: center; border: 2px solid transparent; cursor: pointer; transition: transform .1s; }
-  .biz:active { transform: scale(.97); }
-  .biz.active { border-color: var(--accent); }
-  .biz .emoji { font-size: 32px; }
-  .biz .title { font-weight: 600; margin-top: 4px; font-size: 14px; }
-  .biz .prices { color: var(--hint); font-size: 12px; margin-top: 2px; }
-
-  .trade-head { display: flex; justify-content: space-between; margin-bottom: 12px; }
-  .trade-head b { font-size: 17px; }
-  .price-buy { color: var(--red); } .price-sell { color: var(--green); }
-  .qty { display: flex; gap: 8px; align-items: center; }
-  .qty input {
-    flex: 1; min-width: 0; padding: 12px; font-size: 18px; text-align: center;
-    background: var(--bg); color: var(--text); border: 0; border-radius: 10px;
-  }
-  .qty button.step { width: 44px; height: 44px; font-size: 22px; background: var(--bg);
-                     color: var(--text); border: 0; border-radius: 10px; }
-  .quick { display: flex; gap: 8px; margin: 10px 0; }
-  .quick button { flex: 1; padding: 8px 0; background: var(--bg); color: var(--text);
-                  border: 0; border-radius: 8px; font-size: 14px; }
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn { padding: 14px; border: 0; border-radius: 12px; font-size: 16px; font-weight: 600;
-         color: #fff; cursor: pointer; }
-  .btn:active { opacity: .8; } .btn:disabled { opacity: .4; }
-  .btn.buy { background: var(--red); } .btn.sell { background: var(--green); }
-  .total { text-align: center; color: var(--hint); font-size: 13px; margin-top: 8px; min-height: 18px; }
-
-  .top-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
-  .top-row + .top-row { border-top: 1px solid var(--bg); }
-  .top-row.me { font-weight: 700; }
-  .top-row .pos { width: 28px; text-align: center; font-size: 18px; }
-  .top-row .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .empty { text-align: center; color: var(--hint); padding: 14px; }
-  .toast {
-    position: fixed; left: 16px; right: 16px; bottom: 24px; padding: 14px; border-radius: 12px;
-    background: #222; color: #fff; text-align: center; opacity: 0; transform: translateY(20px);
-    transition: .25s; pointer-events: none; z-index: 10;
-  }
-  .toast.show { opacity: 1; transform: none; }
-  .toast.error { background: var(--red); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бизнес Симулятор Mini App</title>
+    <!-- Подключаем скрипт Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #000000);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+            --button-color: var(--tg-theme-button-color, #2481cc);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 { margin-bottom: 8px; }
+        .card {
+            background: rgba(128, 128, 128, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            background-color: var(--button-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:active { opacity: 0.8; }
+        .full-width { grid-column: span 2; }
+    </style>
 </head>
 <body>
-  <div class="card balance">
-    <div class="name" id="name">…</div>
-    <div class="money" id="money">0$</div>
-  </div>
-  <div class="stats">
-    <div class="card stat"><div class="label">📈 Прибыль</div><div class="value" id="profit">0$</div></div>
-    <div class="card stat">
-      <div class="label">📦 Склад</div><div class="value" id="inv">0/0</div>
-      <div class="bar"><div id="inv-bar" style="width:0"></div></div>
+
+    <h2>📊 Статистика бизнеса</h2>
+    <div class="card" id="stats-card">
+        Загрузка данных...
     </div>
-  </div>
 
-  <h2>Бизнес</h2>
-  <div class="biz-list" id="biz-list"></div>
-
-  <div id="trade-section" hidden>
-    <h2>Торговля</h2>
-    <div class="card">
-      <div class="trade-head">
-        <b id="product"></b>
-        <span><span class="price-buy" id="p-buy"></span> · <span class="price-sell" id="p-sell"></span></span>
-      </div>
-      <div class="qty">
-        <button class="step" data-step="-1">−</button>
-        <input id="amount" type="number" inputmode="numeric" min="1" value="1">
-        <button class="step" data-step="1">+</button>
-      </div>
-      <div class="quick">
-        <button data-quick="5">5</button><button data-quick="10">10</button>
-        <button data-quick="max-buy">Макс. купить</button><button data-quick="max-sell">Всё продать</button>
-      </div>
-      <div class="actions">
-        <button class="btn buy" id="btn-buy">Купить</button>
-        <button class="btn sell" id="btn-sell">Продать</button>
-      </div>
-      <div class="total" id="total"></div>
+    <h2>🏢 Выбор бизнеса</h2>
+    <div class="btn-grid">
+        <button onclick="selectBusiness('Кафе')">☕ Кафе</button>
+        <button onclick="selectBusiness('Магазин одежды')">👗 Одежда</button>
+        <button onclick="selectBusiness('Интернет магазин')">🎧 Интернет-магазин</button>
+        <button onclick="selectBusiness('Автомойка')">🚗 Автомойка</button>
     </div>
-  </div>
 
-  <h2>🏆 Топ игроков</h2>
-  <div class="card" id="top"><div class="empty">Загрузка…</div></div>
+    <h2>⚙️ Действия</h2>
+    <div class="btn-grid" style="margin-top: 10px;">
+        <button onclick="sendAction('buy')">📦 Купить товар</button>
+        <button onclick="sendAction('sell')">💵 Продать товар</button>
+        <button onclick="sendAction('work')">👷 Работа</button>
+        <button onclick="sendAction('upgrade')">🚀 Улучшить ($500)</button>
+    </div>
 
-  <div class="toast" id="toast"></div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Растянуть на весь экран
 
-<script>
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+        // Получаем информацию о пользователе из Telegram
+        const user = tg.initDataUnsafe?.user;
+        
+        // Отрендерим базовую плашку статистики в Mini App
+        document.getElementById('stats-card').innerHTML = `
+            👤 Игрок: ${user ? (user.first_name || user.username) : 'Гость'}<br>
+            📱 Telegram ID: ${user ? user.id : 'Неизвестно'}<br>
+            <i>Выберите действие ниже, бот пришлет отчет в чат!</i>
+        `;
 
-const $ = (id) => document.getElementById(id);
-const MEDALS = ["🥇", "🥈", "🥉"];
-let state = null;
+        function selectBusiness(bizName) {
+            tg.sendData("select:" + bizName);
+        }
 
-// ───────── API ─────────
-async function api(path, body = {}) {
-  const res = await fetch(`/api/${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `tma ${tg.initData}` },
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Ошибка сервера");
-  return data;
-}
-
-async function act(path, body) {
-  try {
-    state = await api(path, body);
-    tg.HapticFeedback?.notificationOccurred("success");
-    render();
-    loadTop();
-  } catch (e) {
-    tg.HapticFeedback?.notificationOccurred("error");
-    toast(e.message, true);
-  }
-}
-
-// ───────── Рендер ─────────
-const business = () => state.businesses.find((b) => b.name === state.user.business);
-const amount = () => Math.max(1, parseInt($("amount").value) || 1);
-
-function render() {
-  const u = state.user;
-  $("name").textContent = u.name;
-  $("money").textContent = `${u.money}$`;
-  $("profit").textContent = `${u.profit}$`;
-  $("inv").textContent = `${u.inventory}/${u.max_items}`;
-  $("inv-bar").style.width = `${Math.min(100, (u.inventory / u.max_items) * 100)}%`;
-
-  $("biz-list").innerHTML = state.businesses.map((b) => `
-    <div class="card biz ${b.name === u.business ? "active" : ""}" data-name="${b.name}">
-      <div class="emoji">${b.emoji}</div>
-      <div class="title">${b.name}</div>
-      <div class="prices">${b.buy_price}$ → ${b.sell_price}$</div>
-    </div>`).join("");
-
-  const b = business();
-  $("trade-section").hidden = !b;
-  if (b) {
-    $("product").textContent = `${b.emoji} ${b.product}`;
-    $("p-buy").textContent = `покупка ${b.buy_price}$`;
-    $("p-sell").textContent = `продажа ${b.sell_price}$`;
-    updateTotal();
-  }
-}
-
-function updateTotal() {
-  const b = business();
-  if (!b) return;
-  const n = amount();
-  $("total").textContent = `Купить: ${n * b.buy_price}$ · Продать: ${n * b.sell_price}$ (+${n * (b.sell_price - b.buy_price)}$)`;
-}
-
-async function loadTop() {
-  try {
-    const { top } = await api("top");
-    $("top").innerHTML = top.length ? top.map((p, i) => `
-      <div class="top-row ${p.me ? "me" : ""}">
-        <span class="pos">${MEDALS[i] || i + 1}</span>
-        <span class="nm">${p.name}</span><span>${p.money}$</span>
-      </div>`).join("") : '<div class="empty">Пока нет игроков</div>';
-  } catch (e) { /* топ не критичен */ }
-}
-
-let toastTimer;
-function toast(text, isError = false) {
-  const el = $("toast");
-  el.textContent = text;
-  el.className = `toast show ${isError ? "error" : ""}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (el.className = "toast"), 2500);
-}
-
-// ───────── События ─────────
-$("biz-list").addEventListener("click", (e) => {
-  const card = e.target.closest(".biz");
-  if (card) { tg.HapticFeedback?.selectionChanged(); act("select", { name: card.dataset.name }); }
-});
-
-document.querySelectorAll("[data-step]").forEach((btn) =>
-  btn.addEventListener("click", () => {
-    $("amount").value = Math.max(1, amount() + Number(btn.dataset.step));
-    updateTotal();
-  }));
-
-document.querySelectorAll("[data-quick]").forEach((btn) =>
-  btn.addEventListener("click", () => {
-    const b = business(), u = state.user, q = btn.dataset.quick;
-    if (q === "max-buy") {
-      $("amount").value = Math.max(1, Math.min(Math.floor(u.money / b.buy_price), u.max_items - u.inventory));
-    } else if (q === "max-sell") {
-      $("amount").value = Math.max(1, u.inventory);
-    } else {
-      $("amount").value = q;
-    }
-    updateTotal();
-  }));
-
-$("amount").addEventListener("input", updateTotal);
-$("btn-buy").addEventListener("click", () => act("buy", { amount: amount() }));
-$("btn-sell").addEventListener("click", () => act("sell", { amount: amount() }));
-
-// ───────── Старт ─────────
-(async () => {
-  try {
-    state = await api("state");
-    render();
-    loadTop();
-  } catch (e) {
-    toast(e.message, true);
-  }
-})();
-</script>
+        function sendAction(action) {
+            tg.sendData(action);
+        }
+    </script>
 </body>
 </html>
